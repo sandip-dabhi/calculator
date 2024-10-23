@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate me! - A Calculator Made By Me</title>
+    <link rel="icon" type="image/x-icon" href="Logo.png">
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="utils.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+  
+
+    <div class="cal-outer-body">
+        <div class="cal-inner-body">
+            <h1 class="text-center">Calculator!</h1>
+            <div class="container flex flex-col items-center">
+                <audio src="./sound-effect/click-sound.wav" id="click-sound"></audio>
+
+                <div class="row">
+                    <input type="text" class="input">
+                </div>
+
+                <div class="row">
+                    <button class="button arithmetic">C</button>
+                    <button class="button arithmetic">%</button>
+                    <button class="button arithmetic">←</button>
+                    <button class="button arithmetic">*</button>
+
+                </div>
+
+                <div class="row">
+                    <button class="button">7</button>
+                    <button class="button">8</button>
+                    <button class="button">9</button>
+                    <button class="button arithmetic">+</button>
+
+                </div>
+
+                <div class="row">
+                    <button class="button">4</button>
+                    <button class="button">5</button>
+                    <button class="button">6</button>
+                    <button class="button arithmetic">-</button>
+
+                </div>
+
+                <div class="row">
+                    <button class="button">1</button>
+                    <button class="button">2</button>
+                    <button class="button">3</button>
+                    <button class="button arithmetic">/</button>
+
+                </div>
+
+                <div class="row">
+                    <button class="button">00</button>
+                    <button class="button">0</button>
+                    <button class="button">.</button>
+                    <button class="button arithmetic">=</button>
+
+                </div>
+
+                <div class="history">
+                    <h2 class="historyHeadline">Calculation History <a class="clearHistory"
+                            title="Click to clear Calculation History">🗑</a></h2>
+                    <ul id="history-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script >// JavaScript for the calculator functionality
+
+      // Get elements
+      const inputField = document.querySelector('.input');
+      const buttons = document.querySelectorAll('.button');
+      const arithmeticButtons = document.querySelectorAll('.arithmetic');
+      const historyList = document.getElementById('history-list');
+      const clearHistoryBtn = document.querySelector('.clearHistory');
+      const clickSound = document.getElementById('click-sound');
+      
+      // Add event listeners to all buttons
+      buttons.forEach(button => {
+          button.addEventListener('click', (e) => {
+              playClickSound();
+              handleInput(e.target.innerText);
+          });
+      });
+      
+      // Add event listeners to arithmetic buttons
+      arithmeticButtons.forEach(button => {
+          button.addEventListener('click', (e) => {
+              playClickSound();
+              handleArithmetic(e.target.innerText);
+          });
+      });
+      
+      // Play the click sound
+      function playClickSound() {
+          clickSound.currentTime = 0;
+          clickSound.play();
+      }
+      
+      // Function to handle number and dot input
+      function handleInput(value) {
+          if (value === 'C') {
+              inputField.value = '';
+          } else if (value === '←') {
+              inputField.value = inputField.value.slice(0, -1);
+          } else if (value === '=') {
+              calculate();
+          } else {
+              inputField.value += value;
+          }
+      }
+      
+      // Function to handle arithmetic operations
+      function handleArithmetic(value) {
+          // Prevent duplicate operators
+          const lastChar = inputField.value.slice(-1);
+          if (['+', '-', '*', '/', '%'].includes(lastChar)) {
+              // If the last character is already an operator, do nothing
+              return;
+          }
+      
+          if (value === 'C') {
+              inputField.value = '';
+          } else if (value === '=') {
+              calculate();
+          } else {
+              inputField.value += value;
+          }
+      }
+      
+      // Calculate the result
+      function calculate() {
+          try {
+              const result = eval(inputField.value);
+              addHistory(inputField.value + " = " + result);
+              inputField.value = result;
+          } catch (error) {
+              inputField.value = 'Error';
+          }
+      }
+      
+      // Add the calculation to the history list
+      function addHistory(entry) {
+          const li = document.createElement('li');
+          li.innerText = entry;
+          historyList.appendChild(li);
+      }
+      
+      // Clear calculation history
+      clearHistoryBtn.addEventListener('click', () => {
+          historyList.innerHTML = '';
+      });
+      </script>
+</body>
+
+</html>
